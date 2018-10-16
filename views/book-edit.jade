@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h3 Edit book
+    //form(method='PATCH', action='http://localhost:3000/book-save/#{book.id}')
+    form(method='POST', action='/book-save/#{book.id}?_method=PATCH' class="col-form" enctype="application/x-www-form-urlencoded")
+        //input(type='hidden', name='_method', value='DELETE')
+        input(type='text', name='title', placeholder='title', required, value='#{book.title}')
+        input(type='text', name='author', placeholder='title', value='#{book.author}')
+        input(type='submit')

@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    div(class="book-list")
+        each val in books
+            div(class="book-item")
+                div= val.id
+                div= val.title
+                div= val.author
