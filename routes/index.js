@@ -2,25 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var BookModel = require('../models/BookModel.js');
-var deleteBook = require('../jest/deleteBook.js');
-
-const books = [
-    {
-        id: 0,
-        title: 'Harry Potter',
-        author: 'J. K. Rowling'
-    },
-    {
-        id: 1,
-        title: 'Martin Eden',
-        author: 'Jack London'
-    },
-    {
-        id: 2,
-        title: 'Gone with the Wind',
-        author: 'Margaret Mitchell'
-    }
-];
+var deleteBook = require('../tests/deleteBook.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -29,18 +11,12 @@ router.get('/', function(req, res, next) {
 
 /* GET all books (json)*/
 router.get('/books', function(req, res, next) {
-   res.json(books);
+   res.json(BookModel.books);
 });
 
 /* GET one book by :id */
 router.get('/book/:id', function(req, res, next) {
-    let requestedBook = null;
-    books.map((book, i, arr) => {
-        if (book.id === +req.params.id) {
-            requestedBook = book;
-            return;
-        }
-    });
+    let requestedBook = BookModel.getBook(req);
     res.json(requestedBook);
 });
 
@@ -50,7 +26,7 @@ router.get('/book', function(req, res, next) {
     let requestedBook = null;
 
     if (searchQuery) {
-        books.map((book, i, arr) => {
+        BookModel.books.map((book, i, arr) => {
            // todo: elastic search (regexp)
            if (book.title === searchQuery) {
                requestedBook = book;
@@ -61,9 +37,8 @@ router.get('/book', function(req, res, next) {
     }
 });
 
-//todo: render book list
 router.get('/book-list', function(req, res, next) {
-    res.render('book-list', {books: books});
+    res.render('book-list', {books: BookModel.books});
 });
 
 /* Render add new book page */
@@ -72,14 +47,14 @@ router.get('/book-add', function(req, res, next) {
 });
 
 /* Save book and render list of books */
-router.post('/book-save', function(req, res, next) {
-    BookModel.addBook(req.body, books);
-    res.render('book-list', {books: books});
+router.post('/book', function(req, res, next) {
+    BookModel.addBook(req.body);
+    res.render('book-list', {books: BookModel.books});
 });
 
 /* Edit book by :id */
 router.get('/book-edit/:id', function(req, res, next) {
-    let book = BookModel.getBook(req, books);
+    let book = BookModel.getBook(req);
     if (book) {
         res.render('book-edit', {book: book});
     } else {
@@ -88,22 +63,23 @@ router.get('/book-edit/:id', function(req, res, next) {
 });
 
 /* PATCH not working */
-router.patch('/book-save/:id', function(req, res, next) {
-    BookModel.editBook(req, books);
-    res.render('book-list', {books: books});
+router.patch('/book/:id', function(req, res, next) {
+    BookModel.editBook(req);
+    res.render('book-list', {books: BookModel.books});
     // res.send('patch');
 });
 
 /* But simple is GET --> */
 router.delete('/book/:id', function(req, res, next) {
-    res.send('patch');
+    let newBooks = deleteBook(BookModel.books, req.params.id);
+    res.render('book-list', {books: newBooks});
+    // res.send('delete');
 });
 
 /* Delete book by :id (get method) */
 router.get('/book-delete/:id', function(req, res, next) {
-    let newBooks = deleteBook(books, req.params.id);
+    let newBooks = deleteBook(BookModel.books, req.params.id);
     res.render('book-list', {books: newBooks});
-    // res.send('delete');
 });
 
 module.exports = router;

@@ -2,7 +2,7 @@ extends layout
 
 block content
     h3 Add book
-    form(method='POST', action='/book-save')
+    form(method='POST', action='/book', class="col-form")
         input(type='text', name='title', placeholder='title', required)
-        input(type='text', name='title', placeholder='author')
+        input(type='text', name='author', placeholder='author')
         input(type='submit')

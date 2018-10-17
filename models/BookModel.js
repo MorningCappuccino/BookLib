@@ -1,18 +1,21 @@
 class BookModel {
 
-    static addBook(book, books) {
+    static addBook(book) {
+        let books = this.books;
         let newBook = null;
         if (book.title) {
             newBook = {
                 id: books.length,
-                title: book.title
+                title: book.title,
+                author: book.author
             };
 
             books.push(newBook);
         }
     }
 
-    static getBook(req, books) {
+    static getBook(req) {
+        let books = this.books;
         let requestedBook = null;
         books.map((book, i, arr) => {
             if (book.id === +req.params.id) {
@@ -23,7 +26,8 @@ class BookModel {
         return requestedBook;
     }
 
-    static editBook(req, books) {
+    static editBook(req) {
+        let books = this.books;
         books.map((book, i, arr) => {
             if (book.id === +req.params.id) {
                 book.title = req.body.title;
@@ -34,5 +38,23 @@ class BookModel {
     }
 
 }
+
+BookModel.books = [
+    {
+        id: 0,
+        title: 'Harry Potter',
+        author: 'J. K. Rowling'
+    },
+    {
+        id: 1,
+        title: 'Martin Eden',
+        author: 'Jack London'
+    },
+    {
+        id: 2,
+        title: 'Gone with the Wind',
+        author: 'Margaret Mitchell'
+    }
+];
 
 module.exports = BookModel;
