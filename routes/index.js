@@ -69,7 +69,7 @@ router.patch('/book/:id', function(req, res, next) {
     // res.send('patch');
 });
 
-/* But simple is GET --> */
+/* But simple is GET for test */
 router.delete('/book/:id', function(req, res, next) {
     let newBooks = deleteBook(BookModel.books, req.params.id);
     res.render('book-list', {books: newBooks});

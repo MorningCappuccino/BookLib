@@ -6,5 +6,7 @@ block content
     form(method='POST', action='/book/#{book.id}?_method=PATCH' class="col-form" enctype="application/x-www-form-urlencoded")
         //input(type='hidden', name='_method', value='DELETE')
         input(type='text', name='title', placeholder='title', required, value='#{book.title}')
-        input(type='text', name='author', placeholder='title', value='#{book.author}')
+        input(type='text', name='author', placeholder='author', value='#{book.author}')
+        input(type='number', name='page_count', placeholder='page_count', value='#{book.page_count}')
+        input(type='number', name='year', placeholder='year', value='#{book.year}')
         input(type='submit')
