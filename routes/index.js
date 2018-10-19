@@ -48,8 +48,12 @@ router.get('/book-add', function(req, res, next) {
 
 /* Save book and render list of books */
 router.post('/book', function(req, res, next) {
-    BookModel.addBook(req.body);
-    res.render('book-list', {books: BookModel.books});
+    let addedBook = BookModel.addBook(req.body);
+    // res.render('book-list', {books: BookModel.books});
+    res.json({
+        status: 'success',
+        book: addedBook
+    });
 });
 
 /* Edit book by :id */
@@ -62,18 +66,25 @@ router.get('/book-edit/:id', function(req, res, next) {
     }
 });
 
-/* PATCH not working */
+/* PATCH now working */
 router.patch('/book/:id', function(req, res, next) {
-    BookModel.editBook(req);
-    res.render('book-list', {books: BookModel.books});
+    let editedBook = BookModel.editBook(req);
+    res.json({
+       status: 'success',
+       data: BookModel.books
+    });
+    // res.render('book-list', {books: BookModel.books});
     // res.send('patch');
 });
 
 /* But simple is GET for test */
 router.delete('/book/:id', function(req, res, next) {
     let newBooks = deleteBook(BookModel.books, req.params.id);
-    res.render('book-list', {books: newBooks});
-    // res.send('delete');
+    // res.render('book-list', {books: newBooks});
+    res.json({
+        status: 'success',
+        data: newBooks
+    })
 });
 
 /* Delete book by :id (get method) */

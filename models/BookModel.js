@@ -14,6 +14,8 @@ class BookModel {
 
             books.push(newBook);
         }
+
+        return newBook;
     }
 
     static getBook(req) {
@@ -30,15 +32,19 @@ class BookModel {
 
     static editBook(req) {
         let books = this.books;
+        let editedBook = null;
+
         books.map((book, i, arr) => {
             if (book.id === +req.params.id) {
                 book.title = req.body.title;
                 book.author = req.body.author;
                 book.page_count = req.body.page_count;
                 book.year = req.body.year;
-                return;
+                editedBook = book;
             }
         });
+
+        return editedBook;
     }
 
 }
