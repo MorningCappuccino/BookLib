@@ -28,21 +28,7 @@ router.patch('/book/:id', BookController.editBook);
 router.delete('/book/:id', BookController.bookDelete);
 
 /* GET one book by :searchQuery */
-router.get('/book', function(req, res, next) {
-    let searchQuery = req.query.search;
-    let requestedBook = null;
-
-    if (searchQuery) {
-        BookController.books.map((book, i, arr) => {
-           // todo: elastic search (regexp)
-           if (book.title === searchQuery) {
-               requestedBook = book;
-               return;
-           }
-        });
-        res.json(requestedBook);
-    }
-});
+router.get('/book', BookController.searchBookByName);
 
 router.get('/book-list', function(req, res, next) {
     res.render('book-list', {books: BookController.books});

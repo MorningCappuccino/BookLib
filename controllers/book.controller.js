@@ -139,6 +139,18 @@ exports.bookDelete = (req, res, next) => {
                 error: err
             })
         });
-}
+};
+
+exports.searchBookByName = (req, res, next) => {
+    const searchQuery = req.query.search;
+    console.log(searchQuery);
+    Book.find().where({ title: {$regex: ""+searchQuery, $options: 'i'} })
+        .then(books => {
+            res.status(200).json(books);
+        })
+        .catch(err => {
+            res.status(500).json({error: err});
+        });
+};
 
 // module.exports = BookController;
