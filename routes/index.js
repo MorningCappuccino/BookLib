@@ -1,8 +1,11 @@
 //set DEBUG=test-project:* & npm start
 var express = require('express');
 var router = express.Router();
-var BookModel = require('../models/BookModel.js');
+var BookController = require('../controllers/book.controller.js');
 var deleteBook = require('../tests/deleteBook.js');
+
+const mongoose = require('mongoose');
+const Book = require('../models/book');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -10,15 +13,19 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET all books (json)*/
-router.get('/books', function(req, res, next) {
-   res.json(BookModel.books);
-});
+router.get('/books', BookController.getAllBooks);
 
 /* GET one book by :id */
-router.get('/book/:id', function(req, res, next) {
-    let requestedBook = BookModel.getBook(req);
-    res.json(requestedBook);
-});
+router.get('/book/:id', BookController.getBookByID);
+
+/* Save book and render list of books */
+router.post('/book', BookController.bookAdd);
+
+/* Edit book by :id */
+router.patch('/book/:id', BookController.editBook);
+
+/* Delete book */
+router.delete('/book/:id', BookController.bookDelete);
 
 /* GET one book by :searchQuery */
 router.get('/book', function(req, res, next) {
@@ -26,7 +33,7 @@ router.get('/book', function(req, res, next) {
     let requestedBook = null;
 
     if (searchQuery) {
-        BookModel.books.map((book, i, arr) => {
+        BookController.books.map((book, i, arr) => {
            // todo: elastic search (regexp)
            if (book.title === searchQuery) {
                requestedBook = book;
@@ -38,7 +45,7 @@ router.get('/book', function(req, res, next) {
 });
 
 router.get('/book-list', function(req, res, next) {
-    res.render('book-list', {books: BookModel.books});
+    res.render('book-list', {books: BookController.books});
 });
 
 /* Render add new book page */
@@ -46,19 +53,9 @@ router.get('/book-add', function(req, res, next) {
    res.render('book-add');
 });
 
-/* Save book and render list of books */
-router.post('/book', function(req, res, next) {
-    let addedBook = BookModel.addBook(req.body);
-    // res.render('book-list', {books: BookModel.books});
-    res.json({
-        status: 'success',
-        book: addedBook
-    });
-});
-
 /* Edit book by :id */
 router.get('/book-edit/:id', function(req, res, next) {
-    let book = BookModel.getBook(req);
+    let book = BookController.getBook(req);
     if (book) {
         res.render('book-edit', {book: book});
     } else {
@@ -66,30 +63,9 @@ router.get('/book-edit/:id', function(req, res, next) {
     }
 });
 
-/* PATCH now working */
-router.patch('/book/:id', function(req, res, next) {
-    let editedBook = BookModel.editBook(req);
-    res.json({
-       status: 'success',
-       data: BookModel.books
-    });
-    // res.render('book-list', {books: BookModel.books});
-    // res.send('patch');
-});
-
-/* But simple is GET for test */
-router.delete('/book/:id', function(req, res, next) {
-    let newBooks = deleteBook(BookModel.books, req.params.id);
-    // res.render('book-list', {books: newBooks});
-    res.json({
-        status: 'success',
-        data: newBooks
-    })
-});
-
 /* Delete book by :id (get method) */
 router.get('/book-delete/:id', function(req, res, next) {
-    let newBooks = deleteBook(BookModel.books, req.params.id);
+    let newBooks = deleteBook(BookController.books, req.params.id);
     res.render('book-list', {books: newBooks});
 });
 

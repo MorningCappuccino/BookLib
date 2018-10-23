@@ -5,12 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 var methodOverride = require('method-override');
+const mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
+//add by MorningCappuccino
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -19,6 +21,9 @@ app.use(function(req, res, next) {
 });
 
 app.use(methodOverride('_method'));
+
+mongoose.connect('mongodb+srv://node-rest:node-rest@node-rest-ssssn.mongodb.net/test?retryWrites=true');
+//end add by MorningCappuccino
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
